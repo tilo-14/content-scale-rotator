@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scale Animation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        .scale-text {
+            font-size: 96px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.15em;
+            white-space: nowrap;
+        }
+
+        .scale-static {
+            position: relative;
+            z-index: 2;
+        }
+
+        .rotating-container {
+            position: relative;
+            display: inline-block;
+            height: 1em;
+            overflow: hidden;
+            min-width: 500px;
+            text-align: left;
+        }
+
+        .rotating-word {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .rotating-word.active {
+            opacity: 1;
+        }
+
+        /* Controls for recording */
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Size adjustment for high-res capture */
+        @media (min-width: 2000px) {
+            .scale-text {
+                font-size: 496.29px;
+            }
+            .rotating-container {
+                min-width: 2500px;
+            }
+        }
+
+        /* Standard desktop size */
+        @media (min-width: 1200px) and (max-width: 1999px) {
+            .scale-text {
+                font-size: 180px;
+            }
+            .rotating-container {
+                min-width: 900px;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .scale-text {
+                font-size: 48px;
+            }
+            .rotating-container {
+                min-width: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="scale-text">
+            <span class="scale-static">Scale</span>
+            <div class="rotating-container">
+                <span class="rotating-word" data-word="on Solana.">on Solana.</span>
+                <span class="rotating-word" data-word="accounts.">accounts.</span>
+                <span class="rotating-word" data-word="tokens.">tokens.</span>
+                <span class="rotating-word" data-word="PDAs.">PDAs.</span>
+                <span class="rotating-word" data-word="Apps.">Apps.</span>
+                <span class="rotating-word" data-word="ZK.">ZK.</span>
+                <span class="rotating-word" data-word="Anything.">Anything.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="startAnimation()">Start Animation</button>
+        <button onclick="resetAnimation()">Reset</button>
+        <button onclick="setHighRes()">Set High Res (496px)</button>
+        <button onclick="setStandardRes()">Set Standard (180px)</button>
+    </div>
+
+    <script>
+        let words = document.querySelectorAll('.rotating-word');
+        let currentIndex = 0;
+        let animationInterval;
+        let isAnimating = false;
+
+        function showWord(index) {
+            // Simple, mechanical transition - only opacity
+            words.forEach((word, i) => {
+                if (i === index) {
+                    word.classList.add('active');
+                } else {
+                    word.classList.remove('active');
+                }
+            });
+        }
+
+        function startAnimation() {
+            if (isAnimating) return;
+            
+            isAnimating = true;
+            currentIndex = 0;
+            
+            // Reset all words
+            words.forEach(word => {
+                word.classList.remove('active');
+            });
+
+            // Show first word immediately
+            showWord(0);
+
+            // Start cycling through words
+            animationInterval = setInterval(() => {
+                currentIndex++;
+                
+                if (currentIndex >= words.length) {
+                    clearInterval(animationInterval);
+                    isAnimating = false;
+                    return;
+                }
+                
+                showWord(currentIndex);
+            }, 750); // 0.75 seconds per word
+        }
+
+        function resetAnimation() {
+            clearInterval(animationInterval);
+            isAnimating = false;
+            currentIndex = 0;
+            
+            // Reset all words
+            words.forEach(word => {
+                word.classList.remove('active');
+            });
+        }
+
+        function setHighRes() {
+            document.querySelector('.scale-text').style.fontSize = '496.29px';
+            document.querySelector('.rotating-container').style.minWidth = '2500px';
+        }
+
+        function setStandardRes() {
+            document.querySelector('.scale-text').style.fontSize = '180px';
+            document.querySelector('.rotating-container').style.minWidth = '900px';
+        }
+
+        // Auto-start animation on page load
+        window.addEventListener('load', () => {
+            setTimeout(startAnimation, 500);
+        });
+    </script>
+</body>
+</html>
