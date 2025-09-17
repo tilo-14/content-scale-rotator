@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scale Animation</title>
+    <title>Scale Animation - Flip Clock</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -27,11 +27,13 @@
         .container {
             text-align: center;
             position: relative;
+            perspective: 2000px;
         }
 
         .scale-text {
             font-size: 96px;
             font-weight: 700;
+            font-style: italic;
             color: white;
             display: flex;
             justify-content: center;
@@ -48,26 +50,77 @@
         .rotating-container {
             position: relative;
             display: inline-block;
-            height: 1em;
-            overflow: hidden;
+            height: 1.2em;
             min-width: 500px;
             text-align: left;
+            transform-style: preserve-3d;
+            perspective: 1500px;
         }
 
         .rotating-word {
             position: absolute;
             left: 0;
-            top: 0;
+            top: 50%;
+            transform: translateY(-50%) rotateX(90deg);
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            transform-origin: center center;
+            transition: none;
         }
 
+        /* Initial state - hidden above */
+        .rotating-word.waiting {
+            transform: translateY(-50%) rotateX(-90deg);
+            opacity: 0;
+        }
+
+        /* Rotating in from top */
+        .rotating-word.flip-in {
+            animation: flipIn 0.5s ease-in-out forwards;
+        }
+
+        /* Static display state */
         .rotating-word.active {
+            transform: translateY(-50%) rotateX(0deg);
             opacity: 1;
+        }
+
+        /* Rotating out to bottom */
+        .rotating-word.flip-out {
+            animation: flipOut 0.5s ease-in-out forwards;
+        }
+
+        @keyframes flipIn {
+            0% {
+                transform: translateY(-50%) rotateX(-90deg) translateZ(100px);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50%) rotateX(0deg) translateZ(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes flipOut {
+            0% {
+                transform: translateY(-50%) rotateX(0deg) translateZ(0);
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50%) rotateX(90deg) translateZ(100px);
+                opacity: 0;
+            }
         }
 
         /* Controls for recording */
@@ -135,13 +188,13 @@
         <div class="scale-text">
             <span class="scale-static">Scale</span>
             <div class="rotating-container">
-                <span class="rotating-word" data-word="on Solana.">on Solana.</span>
-                <span class="rotating-word" data-word="accounts.">accounts.</span>
-                <span class="rotating-word" data-word="tokens.">tokens.</span>
-                <span class="rotating-word" data-word="PDAs.">PDAs.</span>
-                <span class="rotating-word" data-word="Apps.">Apps.</span>
-                <span class="rotating-word" data-word="ZK.">ZK.</span>
-                <span class="rotating-word" data-word="Anything.">Anything.</span>
+                <span class="rotating-word waiting" data-word="on Solana.">on Solana.</span>
+                <span class="rotating-word waiting" data-word="Accounts.">Accounts.</span>
+                <span class="rotating-word waiting" data-word="Tokens.">Tokens.</span>
+                <span class="rotating-word waiting" data-word="PDAs.">PDAs.</span>
+                <span class="rotating-word waiting" data-word="Apps.">Apps.</span>
+                <span class="rotating-word waiting" data-word="ZK.">ZK.</span>
+                <span class="rotating-word waiting" data-word="Anything.">Anything.</span>
             </div>
         </div>
     </div>
@@ -155,57 +208,74 @@
 
     <script>
         let words = document.querySelectorAll('.rotating-word');
-        let currentIndex = 0;
-        let animationInterval;
+        let currentIndex = -1;
+        let animationTimeout;
+        let flipTimeout;
         let isAnimating = false;
 
-        function showWord(index) {
-            // Simple, mechanical transition - only opacity
-            words.forEach((word, i) => {
-                if (i === index) {
-                    word.classList.add('active');
-                } else {
-                    word.classList.remove('active');
-                }
-            });
+        function flipToWord(index) {
+            // If there's a previous word, flip it out
+            if (currentIndex >= 0 && currentIndex < words.length) {
+                words[currentIndex].classList.remove('active');
+                words[currentIndex].classList.add('flip-out');
+            }
+
+            // Flip in the new word
+            if (index < words.length) {
+                words[index].classList.remove('waiting');
+                words[index].classList.add('flip-in');
+                
+                // After flip animation completes, set to active state
+                setTimeout(() => {
+                    words[index].classList.remove('flip-in');
+                    words[index].classList.add('active');
+                }, 500);
+            }
+
+            currentIndex = index;
         }
 
         function startAnimation() {
             if (isAnimating) return;
             
             isAnimating = true;
-            currentIndex = 0;
+            currentIndex = -1;
             
             // Reset all words
             words.forEach(word => {
-                word.classList.remove('active');
+                word.className = 'rotating-word waiting';
             });
 
-            // Show first word immediately
-            showWord(0);
-
-            // Start cycling through words
-            animationInterval = setInterval(() => {
-                currentIndex++;
+            // Start the flip sequence
+            let wordIndex = 0;
+            
+            // Immediate first flip
+            flipToWord(wordIndex);
+            
+            // Schedule subsequent flips
+            animationTimeout = setInterval(() => {
+                wordIndex++;
                 
-                if (currentIndex >= words.length) {
-                    clearInterval(animationInterval);
+                if (wordIndex >= words.length) {
+                    clearInterval(animationTimeout);
                     isAnimating = false;
                     return;
                 }
                 
-                showWord(currentIndex);
-            }, 750); // 0.75 seconds per word
+                // Wait 0.5s (static time) then flip for 0.5s
+                flipToWord(wordIndex);
+            }, 1000); // 0.5s static + 0.5s flip = 1s total per word
         }
 
         function resetAnimation() {
-            clearInterval(animationInterval);
+            clearInterval(animationTimeout);
+            clearTimeout(flipTimeout);
             isAnimating = false;
-            currentIndex = 0;
+            currentIndex = -1;
             
             // Reset all words
             words.forEach(word => {
-                word.classList.remove('active');
+                word.className = 'rotating-word waiting';
             });
         }
 
