@@ -6,7 +6,7 @@
     <title>Scale Animation - Flip Clock</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -31,7 +31,7 @@
         }
 
         .scale-text {
-            font-size: 96px;
+            font-size: 120px;
             font-weight: 700;
             font-style: italic;
             color: white;
@@ -51,7 +51,7 @@
             position: relative;
             display: inline-block;
             height: 1.2em;
-            min-width: 500px;
+            min-width: 600px;
             text-align: left;
             transform-style: preserve-3d;
             perspective: 1500px;
@@ -123,6 +123,44 @@
             }
         }
 
+        /* Logo container */
+        .logos-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 40px;
+            margin-top: 40px;
+            padding-right: 100px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            width: 100%;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .logos-container.visible {
+            opacity: 1;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            height: 24px;
+            width: auto;
+        }
+
+        .logo-text {
+            color: white;
+            font-size: 20px;
+            font-weight: 400;
+            font-family: 'Roboto', sans-serif;
+        }
+
         /* Controls for recording */
         .controls {
             position: fixed;
@@ -151,36 +189,6 @@
             background: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.3);
         }
-
-        /* Size adjustment for high-res capture */
-        @media (min-width: 2000px) {
-            .scale-text {
-                font-size: 496.29px;
-            }
-            .rotating-container {
-                min-width: 2500px;
-            }
-        }
-
-        /* Standard desktop size */
-        @media (min-width: 1200px) and (max-width: 1999px) {
-            .scale-text {
-                font-size: 180px;
-            }
-            .rotating-container {
-                min-width: 900px;
-            }
-        }
-
-        /* Mobile responsive */
-        @media (max-width: 768px) {
-            .scale-text {
-                font-size: 48px;
-            }
-            .rotating-container {
-                min-width: 250px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -194,23 +202,53 @@
                 <span class="rotating-word waiting" data-word="PDAs.">PDAs.</span>
                 <span class="rotating-word waiting" data-word="Apps.">Apps.</span>
                 <span class="rotating-word waiting" data-word="ZK.">ZK.</span>
-                <span class="rotating-word waiting" data-word="Anything.">Anything.</span>
+                <span class="rotating-word active" data-word="Anything.">Anything.</span>
             </div>
+        </div>
+        <div class="logos-container visible">
+            <!-- Light Protocol -->
+            <div class="logo-wrapper">
+                <svg class="logo-icon" viewBox="0 0 161 225" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M98.0647 25.4453L67.5334 136.423C66.1281 141.531 58.3984 140.542 58.3984 135.254V20.367C58.3984 9.5226 67.4317 0.731445 78.5748 0.731445C91.8396 0.731445 101.495 12.9752 98.0647 25.4453Z" fill="white"/>
+                    <path d="M153.259 82.109L81.6818 148.875C77.9435 152.362 72.1971 147.894 74.7369 143.475L123.365 58.8647C129.178 48.7499 142.697 46.0866 151.943 53.2346C161.224 60.409 161.848 74.0979 153.259 82.109Z" fill="white"/>
+                    <path d="M144.201 166.691L89.8826 166.691C85.0838 166.691 83.5566 160.014 87.8488 157.799L136.433 132.725C147.982 126.764 161.571 135.433 161.571 148.762C161.571 158.664 153.794 166.691 144.201 166.691Z" fill="white"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.8186 0.731446C24.4878 0.731446 31.5156 7.76008 31.5156 16.4303L31.5156 209.303C31.5156 217.973 24.4878 225.001 15.8186 225.001C7.14937 225.001 0.121568 217.973 0.121568 209.303L0.121559 16.4303C0.121559 7.76008 7.14936 0.731446 15.8186 0.731446Z" fill="white"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M161.578 209.304C161.578 217.974 154.55 225.002 145.881 225.002L15.82 225.002C7.15079 225.002 0.122978 217.974 0.122978 209.304C0.122978 200.633 7.15079 193.605 15.82 193.605L145.881 193.605C154.55 193.605 161.578 200.633 161.578 209.304Z" fill="white"/>
+                </svg>
+                <span class="logo-text">Light Protocol</span>
+            </div>
+            
+            <!-- Helius -->
+            <svg width="95" height="20" viewBox="0 0 190 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25.23 8.381a13.053 13.053 0 0 0-5.104-1.03c-1.811 0-3.535.366-5.103 1.03L19.71.241a.477.477 0 0 1 .825 0l4.69 8.14h.004Z" fill="white"/>
+                <path d="M13.776 8.991a13.164 13.164 0 0 0-6.334 8.14L3.957 8.233a.477.477 0 0 1 .514-.647l9.305 1.406Z" fill="white"/>
+                <path d="M9.801 28.614.338 25.686a.479.479 0 0 1-.186-.806l7.03-6.539a13.348 13.348 0 0 0-.176 2.159c0 3.063 1.045 5.881 2.796 8.114Z" fill="white"/>
+                <path d="m19.93 33.648-8.297 5.667a.474.474 0 0 1-.743-.359l-.741-9.923a13.072 13.072 0 0 0 9.781 4.611v.004Z" fill="white"/>
+                <path d="m30.073 29.074-.737 9.872a.479.479 0 0 1-.51.44.477.477 0 0 1-.234-.08l-8.28-5.658a13.068 13.068 0 0 0 9.76-4.574Z" fill="white"/>
+                <path d="m39.907 25.656-9.422 2.914a13.105 13.105 0 0 0 2.761-8.07c0-.745-.064-1.477-.182-2.189l7.026 6.535c.27.251.166.701-.183.807v.003Z" fill="white"/>
+                <path d="m36.294 8.25-3.48 8.896A13.183 13.183 0 0 0 26.5 9.005l9.28-1.403a.477.477 0 0 1 .514.647Z" fill="white"/>
+                <path d="M20.126 36.487A3.508 3.508 0 0 0 16.622 40h7.012a3.508 3.508 0 0 0-3.504-3.513h-.004Z" fill="white"/>
+                <path d="M32.942 30.73a3.521 3.521 0 0 0 .554 4.94l4.37-5.495a3.501 3.501 0 0 0-4.927.556h.003Z" fill="white"/>
+                <path d="M35.815 17.142a3.501 3.501 0 0 0 4.197 2.643l-1.561-6.854a3.51 3.51 0 0 0-2.636 4.208v.003Z" fill="white"/>
+                <path d="M27.214 6.393a3.5 3.5 0 0 0 4.68-1.643L25.578 1.7a3.517 3.517 0 0 0 1.639 4.693h-.004Z" fill="white"/>
+                <path d="M12.88 6.393A3.518 3.518 0 0 0 14.516 1.7L8.199 4.75a3.502 3.502 0 0 0 4.681 1.64v.003Z" fill="white"/>
+                <path d="M4.529 17.142a3.514 3.514 0 0 0-2.64-4.207L.331 19.788a3.505 3.505 0 0 0 4.198-2.646Z" fill="white"/>
+                <path d="m2.873 30.175 4.373 5.495a3.52 3.52 0 0 0 .554-4.94 3.502 3.502 0 0 0-4.927-.555Z" fill="white"/>
+                <path d="M60.101 10.214v10.062h11.778v-9.479h5.367V33.36H71.88v-8.287H60.101v8.287h-5.367V11.667l5.367-1.453ZM86.963 28.56h16.419l-1.45 4.797H81.599V10.793h21.786l-1.45 4.798H86.966v4.099h13.952v4.797H86.966v4.072h-.003Zm25.033-17.765v17.765h15.838l-1.45 4.797H106.63V10.793h5.366Zm23.526 0v22.563h-5.366V10.794h5.366Zm22.51 0h5.366v13.609c0 6.572-5.367 9.448-12.299 9.448-6.931 0-11.923-3.083-11.923-9.448V11.667l5.367-1.453v14.189c0 3.313 2.203 4.566 6.817 4.566 4.613 0 6.672-1.338 6.672-4.566v-13.61Zm8.094 6.863c0-3.459 2.727-6.863 8.064-6.863h15.316l-1.449 4.797h-13.81c-1.653 0-2.467 1.046-2.467 2.063 0 1.016.842 2.036 2.467 2.036h7.773c5.249 0 7.977 3.401 7.977 6.864 0 3.462-2.583 6.802-7.977 6.802h-15.894l1.45-4.797h14.387c1.626 0 2.467-.959 2.467-2.005 0-1.047-.811-2.094-2.467-2.094h-7.773c-5.425 0-8.064-3.401-8.064-6.803Z" fill="white"/>
+            </svg>
         </div>
     </div>
 
     <div class="controls">
         <button onclick="startAnimation()">Start Animation</button>
         <button onclick="resetAnimation()">Reset</button>
-        <button onclick="setHighRes()">Set High Res (496px)</button>
-        <button onclick="setStandardRes()">Set Standard (180px)</button>
+        <button onclick="hideControls()">Hide Controls</button>
     </div>
 
     <script>
         let words = document.querySelectorAll('.rotating-word');
         let currentIndex = -1;
         let animationTimeout;
-        let flipTimeout;
         let isAnimating = false;
 
         function flipToWord(index) {
@@ -229,6 +267,13 @@
                 setTimeout(() => {
                     words[index].classList.remove('flip-in');
                     words[index].classList.add('active');
+                    
+                    // Show logos when we reach "Anything"
+                    if (index === words.length - 1) {
+                        setTimeout(() => {
+                            document.querySelector('.logos-container').classList.add('visible');
+                        }, 500);
+                    }
                 }, 500);
             }
 
@@ -245,6 +290,9 @@
             words.forEach(word => {
                 word.className = 'rotating-word waiting';
             });
+            
+            // Hide logos
+            document.querySelector('.logos-container').classList.remove('visible');
 
             // Start the flip sequence
             let wordIndex = 0;
@@ -252,7 +300,7 @@
             // Immediate first flip
             flipToWord(wordIndex);
             
-            // Schedule subsequent flips
+            // Schedule subsequent flips (0.5s display + 0.5s transition = 1s per word)
             animationTimeout = setInterval(() => {
                 wordIndex++;
                 
@@ -262,14 +310,12 @@
                     return;
                 }
                 
-                // Wait 0.5s (static time) then flip for 0.5s
                 flipToWord(wordIndex);
-            }, 1000); // 0.5s static + 0.5s flip = 1s total per word
+            }, 1000);
         }
 
         function resetAnimation() {
             clearInterval(animationTimeout);
-            clearTimeout(flipTimeout);
             isAnimating = false;
             currentIndex = -1;
             
@@ -277,16 +323,13 @@
             words.forEach(word => {
                 word.className = 'rotating-word waiting';
             });
+            
+            // Hide logos
+            document.querySelector('.logos-container').classList.remove('visible');
         }
 
-        function setHighRes() {
-            document.querySelector('.scale-text').style.fontSize = '496.29px';
-            document.querySelector('.rotating-container').style.minWidth = '2500px';
-        }
-
-        function setStandardRes() {
-            document.querySelector('.scale-text').style.fontSize = '180px';
-            document.querySelector('.rotating-container').style.minWidth = '900px';
+        function hideControls() {
+            document.querySelector('.controls').style.display = 'none';
         }
 
         // Auto-start animation on page load
